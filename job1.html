@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CYD产品发布会</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "FangSong", "仿宋", FangSong, STFangsong, serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            grid-gap: 20px;
+        }
+        
+        header {
+            grid-column: 1 / -1;
+            background-color: #000;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .nav-item {
+            display: inline-block;
+            margin: 0 15px;
+        }
+        
+        .date-section {
+            grid-column: 1 / -1;
+            background-color: #fff;
+            color: #000;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .event-title {
+            grid-column: 1 / -1;
+            text-align: center;
+            font-size: 32px;
+            margin: 30px 0;
+            font-weight: bold;
+        }
+        
+        .image-gallery {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+        }
+        
+        .image-placeholder {
+            width: 30%;
+            height: 200px;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px dashed #999;
+        }
+        
+        .black-banner {
+            grid-column: 1 / -1;
+            background-color: #000;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .model-info {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .models {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+        }
+        
+        .footer-columns {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ccc;
+        }
+        
+        .footer-column ul {
+            list-style-type: none;
+        }
+        
+        .footer-column li {
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .image-gallery {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .image-placeholder {
+                width: 80%;
+                margin-bottom: 15px;
+            }
+            
+            .footer-columns {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <span class="nav-item">车型1</span>
+            <span class="nav-item">车型2</span>
+            <span class="nav-item">售后服务</span>
+            <span class="nav-item">品牌中心</span>
+            <span class="nav-item">直播</span>
+            <span class="nav-item">CYD</span>
+        </header>
+        
+        <div class="date-section">
+            <div>2025-8-15 19:00:00</div>
+            <div>2025-8-14 19:00:00</div>
+        </div>
+        
+        <div class="event-title">
+            CYD产品发布会
+        </div>
+        
+        <div class="image-gallery">
+            <div class="image-placeholder">图片1</div>
+            <div class="image-placeholder">图片2</div>
+            <div class="image-placeholder">图片3</div>
+        </div>
+        
+        <div class="black-banner">
+            CYD
+        </div>
+        
+        <div class="model-info">
+            <h2>型号信息</h2>
+            <div class="models">
+                <span>A</span>
+                <span>B</span>
+                <span>C</span>
+                <span>D</span>
+                <span>E</span>
+            </div>
+        </div>
+        
+        <div class="footer-columns">
+            <div class="footer-column">
+                <h3>帮助中心</h3>
+                <ul>
+                    <li>订购流程</li>
+                    <li>买家发起</li>
+                    <li>交易条款</li>
+                    <li>线上活动</li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>相关私车接</h3>
+                <ul>
+                    <li>加入我们</li>
+                    <li>经销商加盟</li>
+                    <li>隐私及数据保护</li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>企业相关</h3>
+                <ul>
+                    <li>开发者与</li>
+                    <li>研究机构</li>
+                    <li>预约登记</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
