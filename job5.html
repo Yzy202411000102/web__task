@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>在线购物折扣</title>
+<style>
+    body{
+        background-color:#f0f0f0;
+        font-family: "Microsoft YaHei", sans-serif;
+    }
+    h2{
+        text-align:center;
+        color:#000099;
+    }
+    .box{
+        width:900px;
+        background-color:white;
+        margin:auto;
+        padding:20px;
+        border:1px solid #ccc;
+        box-shadow:0 0 8px #bbb;
+    }
+    label{
+        display:block;
+        margin:10px 0 5px;
+        color:#003366;
+        font-weight:bold;
+    }
+    input,select{
+        width:300px;
+        height:28px;
+        padding:4px;
+        border:1px solid #999;
+        border-radius:4px;
+    }
+    input[type="checkbox"]{
+        width:18px;
+        height:18px;
+    }
+    button{
+        margin-top:15px;
+        padding:8px 18px;
+        background-color:#0066cc;
+        color:white;
+        border:0;
+        border-radius:4px;
+        cursor:pointer;
+    }
+    button:hover{
+        background-color:#004c99;
+    }
+    #buyerTips{
+        background:#fffae6;
+        border:1px solid #ffd42a;
+        padding:10px;
+        margin-top:15px;
+    }
+    table{
+        width:100%;
+        border-collapse:collapse;
+        margin-top:15px;
+        background:white;
+    }
+    th,td{
+        border:1px solid #ccc;
+        padding:8px;
+        text-align:center;
+    }
+    th{
+        background:#e6f2ff;
+        color:#003366;
+    }
+</style>
+
+<script>
+// 题目要求：在页面顶部使用 document.write 显示提示
+document.write(
+  "<div style='background:#fff7d6;padding:10px;border:1px solid #ffcc66;margin-bottom:15px;width:900px;margin:auto;'>"+
+  "<b>提示：</b>每小时前10分钟享受85折；。普通用户且数量 > 3 时再打9折。"+
+  "</div>"
+);
+</script>
+</head>
+
+<body>
+<h2>在线购物折扣计算</h2>
+
+<div class="box">
+    <div id="clock" style="color:#990000;font-weight:bold;margin-bottom:10px;">
+        当前时间：--:--:--
+    </div>
+
+    <label>客户名称</label>
+    <input id="customerName" type="text">
+
+    <label>单价（元）</label>
+    <input id="price" type="number">
+
+    <label>数量</label>
+    <input id="quantity" type="number">
+
+    <label>客户类型</label>
+    <select id="isVip">
+        <option value="false">普通客户</option>
+        <option value="true">VIP客户</option>
+    </select>
+
+    <label>
+        <input id="isUrgent" type="checkbox"> 是否加急（加价10%）
+    </label>
+
+    <button onclick="addOrder()">添加订单</button>
+
+    <div id="buyerTips">
+        <b>折扣详情将显示在这里</b>
+        <div id="tipsHtml" style="margin-top:8px;color:#555;">尚无订单</div>
+    </div>
+
+    <h3 style="margin-top:25px;color:#003366;">卖家订单记录</h3>
+
+    <table id="historyTable">
+        <thead>
+            <tr>
+                <th>#</th><th>客户</th><th>单价</th><th>数量</th>
+                <th>VIP</th><th>加急</th><th>时间</th><th>最终金额</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <div style="margin-top:10px;color:#444;">
+        总订单数：<span id="totalCount">0</span>　|　
+        总金额：¥<span id="totalAmount">0.00</span>　|　
+        总销量：<span id="totalQuantity">0</span>
+    </div>
+</div>
+
+<script>
+const studentDigit = 2; 
+
+// 时钟
+function updateClock(){
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2,'0');
+    const mm = String(now.getMinutes()).padStart(2,'0');
+    const ss = String(now.getSeconds()).padStart(2,'0');
+    document.getElementById("clock").innerHTML =
+        "当前时间：" + hh + ":" + mm + ":" + ss +
+        (mm < 10 ? "（在 85 折时间段）" : "（无时间折扣）");
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+const orders = [];
+
+function round(n){ return Math.round(n*100)/100; }
+function format(n){ return "¥" + n.toFixed(2); }
+
+// 添加订单
+function addOrder(){
+    const name = customerName.value.trim();
+    const price = Number(document.getElementById("price").value);
+    const qty = Number(document.getElementById("quantity").value);
+    const isVip = document.getElementById("isVip").value === "true";
+    const isUrgent = document.getElementById("isUrgent").checked;
+
+    if(!name){ alert("客户名称不能为空"); return; }
+    if(!(price>0)){ alert("单价必须大于0"); return; }
+    if(!(qty>0 && Number.isInteger(qty))){ alert("数量必须为整数且大于0"); return; }
+
+    // 基础金额
+    let baseTotal = round(price*qty);
+
+    // VIP折扣（通用）
+    let afterVip = isVip ? round(baseTotal * 0.9) : baseTotal;
+
+    // 加急：默认加价 10%
+    let afterUrgent = isUrgent ? round(afterVip * 1.10) : afterVip;
+
+    // 时间折扣：每小时前10分钟 85折
+    const minute = new Date().getMinutes();
+    let finalTotal = minute < 10 ? round(afterUrgent * 0.85) : afterUrgent;
+
+   
+    if(studentDigit === 2 && !isVip && qty > 3){
+        finalTotal = round(finalTotal * 0.90);
+    }
+
+    // 买家提示
+    const lines = [];
+    lines.push("客户：" + name);
+    lines.push("单价：" + format(price));
+    lines.push("数量：" + qty);
+    lines.push("VIP：" + (isVip ? "是" : "否"));
+    lines.push("基础金额：" + format(baseTotal));
+    lines.push("VIP 后：" + format(afterVip));
+    lines.push("加急后：" + format(afterUrgent));
+    lines.push("是否在时间折扣期：" + (minute < 10));
+    lines.push("最终金额：" + format(finalTotal));
+
+    tipsHtml.innerHTML = lines.map(x=>"<div>"+x+"</div>").join("");
+
+    // 记录订单
+    const record = {
+        name,
+        price,
+        qty,
+        isVip,
+        isUrgent,
+        time: new Date().toLocaleString(),
+        final: finalTotal
+    };
+    orders.push(record);
+
+    renderTable();
+}
+
+// 订单表格
+function renderTable(){
+    const tbody = document.querySelector("#historyTable tbody");
+    tbody.innerHTML = "";
+
+    let totalAmount = 0;
+    let totalQty = 0;
+
+    orders.forEach((o,i)=>{
+        totalAmount += o.final;
+        totalQty += o.qty;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${i+1}</td>
+            <td>${o.name}</td>
+            <td>${format(o.price)}</td>
+            <td>${o.qty}</td>
+            <td>${o.isVip ? "VIP" : "普通"}</td>
+            <td>${o.isUrgent ? "加急" : "否"}</td>
+            <td>${o.time}</td>
+            <td>${format(o.final)}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    totalCount.innerHTML = orders.length;
+    totalAmountElem.innerHTML = totalAmount.toFixed(2);
+    totalQuantity.innerHTML = totalQty;
+}
+
+// 表格中的金额 span ID 修正
+const totalAmountElem = document.getElementById("totalAmount");
+
+</script>
+
+</body>
+</html>
